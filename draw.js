@@ -4,9 +4,10 @@ const dimension = document.querySelector('#sliderValue');
 const dimensionsLabel = document.querySelector('.size-label');
 const dropdown = document.getElementById('auto-manual');
 const clearButton = document.getElementById('clear-grid');
+const colorPicker = document.getElementById('color');
 let grid = document.querySelector('.grid-container');
 let nodeList = [];
-let color = "#000000";
+let color = colorPicker.value;
 
 let mouseDown = false;
 document.body.onmousedown = function() { 
@@ -25,6 +26,10 @@ slider.addEventListener('input', function (e) {
 
 slider.addEventListener('change', function (e) {
     createGrid(dimension.value);
+});
+
+colorPicker.addEventListener('change', function (e) {
+    color = colorPicker.value;
 });
 
 let autoDraw = function(e) {

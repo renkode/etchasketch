@@ -13,8 +13,18 @@ body {
     gap: 10px;
 }
 
+h1 {
+    margin-bottom:5px;
+}
+
 .options {
     margin-bottom: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+#color {
+    width: 40px;
 }
 
 .grid-container {
@@ -29,14 +39,6 @@ body {
 .cell {
     margin: 0;
     padding: 0;
-}
-
-.cell:hover {
-    background-color: black;
-}
-
-.active{
-    background-color: black;
 }
 
 /* Chrome, Safari, Edge, Opera */
