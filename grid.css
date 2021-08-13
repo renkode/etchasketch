@@ -13,6 +13,10 @@ body {
     gap: 10px;
 }
 
+.options {
+    margin-bottom: 10px;
+}
+
 .grid-container {
     width: 500px;
     height: 500px;
@@ -25,8 +29,6 @@ body {
 .cell {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    border: 1px solid rgb(0,0,0,0.2);
 }
 
 .cell:hover {

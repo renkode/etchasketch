@@ -2,7 +2,19 @@ const container = document.querySelector('.grid-container');
 const slider = document.querySelector('#slider');
 const dimension = document.querySelector('#sliderValue');
 const dimensionsLabel = document.querySelector('.size-label');
+const dropdown = document.getElementById('auto-manual');
+const clearButton = document.getElementById('clear-grid');
+let grid = document.querySelector('.grid-container');
 let nodeList = [];
+let color = "#000000";
+
+let mouseDown = false;
+document.body.onmousedown = function() { 
+    mouseDown = true;
+}
+document.body.onmouseup = function() {
+    mouseDown = false;
+}
 
 dimensionsLabel.textContent = ` x ${dimension.value}`
 
@@ -12,8 +24,29 @@ slider.addEventListener('input', function (e) {
 });
 
 slider.addEventListener('change', function (e) {
-    clearGrid(dimension.value);
+    createGrid(dimension.value);
 });
+
+let autoDraw = function(e) {
+    e.target.style.backgroundColor = color;
+}
+
+let manualDraw = function(e) {
+    if (mouseDown) e.target.style.backgroundColor = color;
+}
+
+dropdown.addEventListener('input', function(e){
+    let drawMode = e.target.value;
+    nodeList.forEach(node => {
+        if (drawMode === "manual") {
+            node.addEventListener('mouseenter', manualDraw);
+            node.removeEventListener('mouseenter', autoDraw);
+        } else {
+            node.addEventListener('mouseenter', autoDraw);
+            node.removeEventListener('mouseenter', manualDraw);
+        }
+    })
+})
 
 dimension.addEventListener('change', function (e) {
     let num = parseInt(e.target.value);
@@ -22,12 +55,16 @@ dimension.addEventListener('change', function (e) {
     if (!Number.isInteger(num)) dimension.value = 32;
     slider.value = dimension.value;
     dimensionsLabel.textContent = ` x ${dimension.value}`;
-    clearGrid(dimension.value);
+    createGrid(dimension.value);
 });
 
-
+clearButton.addEventListener('click', btn = () => {
+    clearGrid();
+    createGrid(dimension.value);
+})
 
 function createGrid(size) {
+    clearGrid();
     container.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
     container.style.gridTemplateRows = `repeat(${size}, 1fr)`;
     for (let i = 0; i < size*size; i++) {
@@ -35,21 +72,24 @@ function createGrid(size) {
         nodeList.push(node);
     }
     nodeList.forEach(node => {
+        node.id = nodeList.indexOf(node);
         node.classList.add("cell");
-        node.addEventListener('mouseenter', function(e) {
-            //e.target.style.backgroundColor = "#000000";
-            e.target.classList.add("active");
-        }, {once:true})
+        if (dropdown.value === "manual") {
+            node.addEventListener('mouseenter', manualDraw);
+            node.removeEventListener('mouseenter', autoDraw);
+        } else {
+            node.addEventListener('mouseenter', autoDraw);
+            node.removeEventListener('mouseenter', manualDraw);
+        }
         container.appendChild(node);
     })
 }
 
-function clearGrid(newSize) {
+function clearGrid() {
     while (container.firstChild) {
         container.removeChild(container.lastChild);
       }
     nodeList = [];
-    createGrid(newSize);
 }
 
 createGrid(dimension.value);
