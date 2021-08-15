@@ -32,25 +32,29 @@ colorPicker.addEventListener('change', function (e) {
     color = colorPicker.value;
 });
 
-let autoDraw = function(e) {
+let draw = function(e) {
     e.target.style.backgroundColor = color;
 }
 
-let manualDraw = function(e) {
+let holdToDraw = function(e) {
     if (mouseDown) e.target.style.backgroundColor = color;
+}
+
+function addListeners (node, drawMode) {
+    if (drawMode === "manual") {
+        node.addEventListener('mouseenter', holdToDraw);
+        node.addEventListener('click',draw);
+        node.removeEventListener('mouseenter', draw);
+    } else {
+        node.addEventListener('mouseenter', draw);
+        node.removeEventListener('mouseenter', holdToDraw);
+        node.removeEventListener('click', draw);
+    }
 }
 
 dropdown.addEventListener('input', function(e){
     let drawMode = e.target.value;
-    nodeList.forEach(node => {
-        if (drawMode === "manual") {
-            node.addEventListener('mouseenter', manualDraw);
-            node.removeEventListener('mouseenter', autoDraw);
-        } else {
-            node.addEventListener('mouseenter', autoDraw);
-            node.removeEventListener('mouseenter', manualDraw);
-        }
-    })
+    nodeList.forEach(node => addListeners(node,drawMode));
 })
 
 dimension.addEventListener('change', function (e) {
@@ -79,13 +83,7 @@ function createGrid(size) {
     nodeList.forEach(node => {
         node.id = nodeList.indexOf(node);
         node.classList.add("cell");
-        if (dropdown.value === "manual") {
-            node.addEventListener('mouseenter', manualDraw);
-            node.removeEventListener('mouseenter', autoDraw);
-        } else {
-            node.addEventListener('mouseenter', autoDraw);
-            node.removeEventListener('mouseenter', manualDraw);
-        }
+        addListeners(node,dropdown.value);
         container.appendChild(node);
     })
 }
